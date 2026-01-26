@@ -12,7 +12,23 @@ typedef struct {
     int occupee;
 } Place;
 
-void creerSalle(Place *places, int nb_rangees, int nb_tables_par_rangee) {
+int lireEleves(Eleve *eleves, char *nomFichier) {
+    FILE *f;
+    int i = 0;
+
+    f = fopen(nomFichier, "r");
+    if (f == NULL) return 0;
+
+    while (fscanf(f, "%s %s", eleves[i].prenom, eleves[i].nom) == 2) {
+        i++;
+    }
+
+    return i;
+}
+
+Place* creerSalle(int nb_rangees, int nb_tables_par_rangee) {
+    int total = nb_rangees * nb_tables_par_rangee;
+    Place *places = malloc(total * sizeof(Place));
     int i, j, k = 0;
 
     for (i = 0; i < nb_rangees; i++) {
@@ -23,12 +39,27 @@ void creerSalle(Place *places, int nb_rangees, int nb_tables_par_rangee) {
             k++;
         }
     }
+
+    return places;
+}
+
+void afficherSalle(Place *places, int nb_rangees, int nb_tables_par_rangee) {
+    int i, j, k = 0;
+    for (i = 0; i < nb_rangees; i++) {
+        printf("Rangée %d : ", i + 1);
+        for (j = 0; j < nb_tables_par_rangee; j++) {
+            printf("[libre] ");
+            k++;
+        }
+        printf("\n");
+    }
 }
 
 int main() {
-    int nb_rangees;
-    int nb_tables_par_rangee;
-    Place *places;
+    int nb_rangees, nb_tables_par_rangee, nbEleves;
+    Eleve eleves[100];
+    Place *salle;
+    char nomFichier[50];
 
     printf("Nombre de rangees : ");
     scanf("%d", &nb_rangees);
@@ -36,9 +67,14 @@ int main() {
     printf("Nombre de tables par rangee : ");
     scanf("%d", &nb_tables_par_rangee);
 
-    places = malloc(nb_rangees * nb_tables_par_rangee * sizeof(Place));
+    printf("Nom du fichier : ");
+    scanf("%s", nomFichier);
 
-    creerSalle(places, nb_rangees, nb_tables_par_rangee);
+    nbEleves = lireEleves(eleves, nomFichier);
+
+    salle = creerSalle(nb_rangees, nb_tables_par_rangee);
+
+    afficherSalle(salle, nb_rangees, nb_tables_par_rangee);
 
     return 0;
 }
