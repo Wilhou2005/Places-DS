@@ -48,10 +48,36 @@ void afficherSalle(Place *places, int nb_rangees, int nb_tables_par_rangee) {
     for (i = 0; i < nb_rangees; i++) {
         printf("Rangée %d : ", i + 1);
         for (j = 0; j < nb_tables_par_rangee; j++) {
+
+            if (places[k].occupee == 1) {
+                printf("[occupee]");
+            } else {
+                printf("[libre]");
+
+            }
             printf("[libre] ");
             k++;
         }
         printf("\n");
+    }
+}
+
+void placerElevesSimple(Place *places, int nb_rangees, int nb_tables_par_rangee, int nbEleves)
+{
+    int total = nb_rangees*nb_tables_par_rangee;
+    int i;
+    int position;
+
+    for (i=0; i <nbEleves && i <total; i++)
+    {
+        position= rand() % total;
+
+        while (places[position].occupee == 1)
+        {
+            position=rand() % total;
+        }
+
+        places[position].occupee= 1;
     }
 }
 
@@ -74,7 +100,11 @@ int main() {
 
     salle = creerSalle(nb_rangees, nb_tables_par_rangee);
 
+    placerElevesSimple(salle, nb_rangees, nb_tables_par_rangee, nbEleves);
+
     afficherSalle(salle, nb_rangees, nb_tables_par_rangee);
+
+    free(salle) ;
 
     return 0;
 }
